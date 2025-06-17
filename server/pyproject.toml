@@ -1,0 +1,21 @@
+[project]
+name = "atheriya-backend"
+version = "1.0.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "alembic>=1.16.1",
+    "asyncpg>=0.30.0",
+    "bcrypt>=4.3.0",
+    "celery>=5.5.3",
+    "fastapi[all]>=0.115.12",
+    "passlib>=1.7.4",
+    "psycopg2-binary>=2.9.10",
+    "pyjwt>=2.10.1",
+    "python-decouple>=3.8",
+    "redis>=6.2.0",
+    "ruff>=0.11.13",
+    "sqlalchemy-celery-beat>=0.8.4",
+    "sqlalchemy[asyncio]>=2.0.41",
+]

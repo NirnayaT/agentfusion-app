@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    networks:
+      - network
+
+  fastapi:
+    build: .
+    container_name: fastapi_app
+    entrypoint: "/code/entrypoint.sh"
+    command: ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+      - db
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+    networks:
+      - network
+
+  celery:
+    build: .
+    container_name: celery_worker
+    entrypoint: "/code/entrypoint.sh"
+    command: ["uv", "run","celery", "-A", "app.celery_worker.celery", "worker", "--loglevel=info"]
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - db
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - REDIS_URL=redis://redis:6379/0 
+    networks:
+      - network
+
+  celery-beat:
+    build: .
+    container_name: celery_beat
+    entrypoint: "/code/entrypoint.sh"
+    command: ["uv","run","celery", "-A", "app.celery_worker", "beat", "--loglevel=info", "--scheduler", "sqlalchemy"]
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+      - db
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    networks:
+      - network
+
+  db:
+    image: postgres:17
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - network
+
+  email:
+    image: axllent/mailpit
+    container_name: mailpit
+    restart: unless-stopped
+    volumes:
+      - mailpit_data:/data
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
+    environment:
+      - MP_MAX_MESSAGES=5000
+      - MP_DATABASE=/data/mailpit.db
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    networks:
+      - network
+
+volumes:
+  postgres_data:
+  mailpit_data:
+
+networks:
+  network:
+    driver: bridge

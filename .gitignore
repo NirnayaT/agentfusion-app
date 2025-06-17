@@ -50,3 +50,4 @@ coverage/
 
 # Docker
 docker-compose.override.yml
+*.rdb
