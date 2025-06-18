@@ -1,0 +1,26 @@
+from pydantic import BaseModel, EmailStr, field_validator
+from app.models.database.user_model import UserRolesEnum
+
+
+class UserLoginIn(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class RefreshRequestIn(BaseModel):
+    refresh_token: str
+
+
+class UserRegistrationIn(BaseModel):
+    password: str
+    email: str
+    first_name: str
+    last_name: str
+    role: str
+
+    @field_validator("role")
+    @classmethod
+    def validate_role(cls, value: str) -> str:
+        if value not in ["agent", "user"]:
+            raise ValueError("invalid roles assigned")
+        return value
