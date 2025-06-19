@@ -12,31 +12,11 @@ while ! nc -z db 5432; do
 done
 echo "Postgres is up!"
 
-# # Verify database connection
-# echo "Verifying database connection..."
-# max_attempts=30
-# attempt=0
-
-# while [ $attempt -lt $max_attempts ]; do
-#     if psql "$SQLALCHEMY_DATABASE_URL" -c "SELECT 1;" > /dev/null 2>&1; then
-#         echo "Database connection verified!"
-#         break
-#     fi
-    
-#     attempt=$((attempt + 1))
-#     echo "Database connection attempt $attempt/$max_attempts failed, retrying..."
-#     sleep 2
-# done
-
-# if [ $attempt -eq $max_attempts ]; then
-#     echo "Error: Could not connect to database after $max_attempts attempts"
-#     echo "DATABASE_URL: $SQLALCHEMY_DATABASE_URL"
-#     exit 1
-# fi
-
-# Run Alembic migrations (only for FastAPI service to avoid conflicts)
-if [[ "$1" == "uvicorn" ]]; then
+# Run Alembic migrations ONLY IF the command contains 'uvicorn'
+# This ensures migrations are run by the FastAPI service
+if echo "$@" | grep -q "uvicorn"; then
     echo "Running Alembic migrations..."
+    # Ensure uv is in the path or use python -m
     uv run alembic upgrade head
     echo "Migrations completed!"
 fi
