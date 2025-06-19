@@ -21,6 +21,6 @@ class UserRegistrationIn(BaseModel):
     @field_validator("role")
     @classmethod
     def validate_role(cls, value: str) -> str:
-        if value not in ["agent", "user"]:
+        if value not in UserRolesEnum:
             raise ValueError("invalid roles assigned")
         return value

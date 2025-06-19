@@ -3,8 +3,8 @@ from .shared_models import BaseModel
 from enum import Enum
 
 
-class UserRolesEnum(Enum):
-    ADMIN = ""
+class UserRolesEnum(str, Enum):
+    AGENT = "agent"
     USER = "user"
 
 
