@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { FormHelperText, TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 type Props = {
@@ -25,7 +25,6 @@ const AuthTextField = ({ control, name, placeholder, error }: Props) => {
             placeholder={placeholder}
             className="register-textfield"
             error={Boolean(error)}
-            helperText={error?.message}
             slotProps={{
               htmlInput: {
                 sx: { color: "var(--text-color)" },
@@ -37,6 +36,11 @@ const AuthTextField = ({ control, name, placeholder, error }: Props) => {
           />
         )}
       />
+      {error?.message && (
+        <FormHelperText className="register-helper-text">
+          {error.message}
+        </FormHelperText>
+      )}
     </>
   );
 };

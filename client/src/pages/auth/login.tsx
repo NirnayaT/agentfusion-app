@@ -6,19 +6,33 @@ import { Typography, Button, Box, Paper, Container } from "@mui/material";
 import AuthTextField from "../../components/auth/AuthTextField";
 import AuthPasswordField from "../../components/auth/AuthPasswordField";
 import { LoginZodSchema } from "../../components/auth/AuthZodSchema";
+import { useLoginUserMutation } from "../../services/api/authApi";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [login, { isLoading }] = useLoginUserMutation();
+
   const {
     control,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<z.infer<typeof LoginZodSchema>>({
     resolver: zodResolver(LoginZodSchema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log("Login form submitted", data);
+  const onSubmit = async (data: z.infer<typeof LoginZodSchema>) => {
+    try {
+      const response = await login(data).unwrap();
+      // Store tokens
+      localStorage.setItem("accessToken", response.access_token);
+      localStorage.setItem("refreshToken", response.refresh_token);
+
+      console.log("Login success");
+      navigate("/dashboard");
+    } catch (err: any) {
+      console.error("Login failed", err);
+      alert(err?.data?.detail || "Login failed");
+    }
   };
 
   const handleMicrosoftClick = () => {
@@ -69,7 +83,7 @@ const Login = () => {
               color: "var(--button-active-background)",
               cursor: "pointer",
             }}
-            onClick={() => handleForgotPassClick()}
+            onClick={handleForgotPassClick}
           >
             Forgot password?
           </Typography>
@@ -78,9 +92,9 @@ const Login = () => {
             type="submit"
             fullWidth
             className="register-submit-button"
-            disabled={isSubmitting}
+            disabled={isLoading}
           >
-            {isSubmitting ? "Signing in..." : "Sign In"}
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
 
           <Box className="register-divider-container">

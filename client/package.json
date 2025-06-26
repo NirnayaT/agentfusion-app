@@ -18,9 +18,11 @@
     "@mui/material": "^7.1.1",
     "@reduxjs/toolkit": "^2.8.2",
     "antd": "^5.26.0",
+    "libphonenumber-js": "^1.12.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.58.0",
+    "react-phone-input-2": "^2.15.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
     "zod": "^3.25.64"

@@ -1,4 +1,4 @@
-import { TextField, InputAdornment, IconButton } from "@mui/material";
+import { TextField, InputAdornment, IconButton, FormHelperText } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
 import { Controller } from "react-hook-form";
@@ -30,7 +30,6 @@ const AuthPasswordField = ({ control, name, placeholder, error }: Props) => {
             type={showPassword ? "text" : "password"}
             className="register-textfield"
             error={Boolean(error)}
-            helperText={error?.message}
             slotProps={{
               input: {
                 endAdornment: (
@@ -54,6 +53,11 @@ const AuthPasswordField = ({ control, name, placeholder, error }: Props) => {
           />
         )}
       />
+            {error?.message && (
+              <FormHelperText className="register-helper-text">
+                {error.message}
+              </FormHelperText>
+            )}
     </>
   );
 };
