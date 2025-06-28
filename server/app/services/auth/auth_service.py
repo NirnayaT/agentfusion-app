@@ -1,11 +1,10 @@
 import logging
 from datetime import timedelta
 
-import jwt
 from fastapi import HTTPException, status
 from mailers import Email, Mailer
 from passlib.context import CryptContext
-from pydantic import EmailStr, UUID4
+from pydantic import UUID4, EmailStr
 from sqlalchemy.exc import IntegrityError
 
 from app.core.config.config import SMTP_CONNECTION_STRING
@@ -160,10 +159,10 @@ class PasswordService:
 
         return None
 
-    async def change_password(self, token: UUID4, password: str):
+    async def reset_passsword(self, token: UUID4, password: str):
         validate_token = await self.password_repository.validate_token(token=token)
         if validate_token:
-            password_changed = await self.password_repository.change_password(
+            password_changed = await self.password_repository.reset_password(
                 password=password,
                 token=token,
             )
@@ -172,4 +171,14 @@ class PasswordService:
             else:
                 return False
         else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
+    async def update_password(self, user_id, current_password, new_password):
+        updated = await self.password_repository.update_password(
+            user_id=user_id,
+            new_password=new_password,
+            current_password=current_password,
+        )
+
+        if not updated:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

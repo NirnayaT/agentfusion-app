@@ -13,6 +13,8 @@ from app.schemas.request.auth_request import (
     RefreshRequestIn,
     UserLoginIn,
     UserRegistrationIn,
+    UserProfileUpdateIn,
+    PasswordChangeRequestIn,
 )
 from app.schemas.response.auth_response import (
     MessageOut,
@@ -87,7 +89,7 @@ async def register(
         return
 
 
-@router.post("/me", response_model=UserOut)
+@router.post("/users/me", response_model=UserOut)
 async def get_current_user_endpoint(
     current_user: User = Depends(get_current_user),
 ):
@@ -96,6 +98,34 @@ async def get_current_user_endpoint(
         first_name=str(current_user.first_name),
         last_name=str(current_user.last_name),
     )
+
+
+@router.put("/users/me/pasword", response_model=MessageOut)
+async def update_password(
+    payload: PasswordChangeRequestIn,
+    current_user: User = Depends(get_current_user),
+    password_service: PasswordService = Depends(get_password_service),
+):
+    await password_service.update_password(
+        user_id=current_user.id,
+        current_password=payload.current_password,
+        new_password=payload.new_password,
+    )
+
+    return MessageOut(message="password reset completed")
+
+
+@router.put("/users/me/", response_model=UserOut)
+async def update_profile(
+    payload: UserProfileUpdateIn,
+    current_user: User = Depends(get_current_user),
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    user = await auth_service.update_profile(
+        current_user=current_user,
+        user_data=payload,
+    )
+    return user
 
 
 @router.post("/password-reset/request", response_model=MessageOut)
@@ -112,7 +142,7 @@ async def confirm_password_reset(
     payload: PasswordResetConfirmIn,
     password_service: PasswordService = Depends(get_password_service),
 ):
-    await password_service.change_password(
+    await password_service.reset_passsword(
         password=payload.password,
         token=payload.token,
     )

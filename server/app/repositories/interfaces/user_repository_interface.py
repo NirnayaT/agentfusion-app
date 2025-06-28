@@ -13,7 +13,7 @@ class IUserRepository(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    async def update(self, data) -> UserORM | None:
+    async def update(self, id, data) -> UserORM | None:
         raise NotImplementedError()
 
     @abstractmethod

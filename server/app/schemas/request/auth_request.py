@@ -34,3 +34,7 @@ class PasswordResetConfirmIn(BaseModel):
     token: UUID4
     password: str
     
+
+class PasswordChangeRequestIn(BaseModel):
+    current_password: str
+    new_password: str

@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.security.password import hash_password
+from app.core.security.password import hash_password, verify_password
 from app.models.database.user_model import (
     PasswordReset as PasswordResetORM,
 )
@@ -17,7 +17,7 @@ from app.models.database.user_model import (
     User as UserORM,
 )
 from app.repositories.interfaces.user_repository_interface import IUserRepository
-from app.schemas.request.auth_request import UserRegistrationIn
+from app.schemas.request.auth_request import UserRegistrationIn, UserProfileUpdateIn
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +121,7 @@ class PasswordRepository:
         result: bool | None = await self.db.scalar(stmt)
         return result if isinstance(result, bool) else False
 
-    async def change_password(self, password, token):
+    async def reset_password(self, password, token):
         user = await self.get_user_by_token(token)  # Add 'await' here
         if user:
             user.hashed_password = hash_password(password)  # type:ignore
@@ -146,3 +146,15 @@ class PasswordRepository:
         await self.db.commit()
 
         return user
+
+    async def update_password(self, user_id, new_password, current_password) -> bool:
+        user = await UserRepository(self.db).get_by_id(user_id)
+
+        if user and verify_password(current_password, str(user.hashed_password)):
+            user.hashed_password = hash_password(new_password)  # type:ignore
+            self.db.add(user)
+            await self.db.commit()
+            await self.db.refresh(user)
+            return True
+        else:
+            return False
