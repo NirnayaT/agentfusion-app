@@ -1,5 +1,12 @@
-from app.dependencies.auth_dependencies import get_auth_service, get_current_user
-from app.schemas.response.auth_response import TokenPairOut, UserOut, RefreshTokenOut
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_limiter.depends import RateLimiter
+
+from app.dependencies.auth_dependencies import (
+    get_auth_service,
+    get_current_user,
+    get_password_service,
+)
+from app.models.database.user_model import User
 from app.schemas.request.auth_request import (
     UserLoginIn,
     RefreshRequestIn,
@@ -12,7 +19,13 @@ from fastapi import APIRouter, Depends, HTTPException, status
 router = APIRouter(tags=["Auth"])
 
 
-@router.post("/login", response_model=TokenPairOut)
+@router.post(
+    "/login",
+    response_model=TokenPairOut,
+    dependencies=[
+        Depends(RateLimiter(times=5, seconds=60)),
+    ],
+)
 async def login(
     user: UserLoginIn,
     auth_service: AuthService = Depends(get_auth_service),
@@ -29,7 +42,13 @@ async def login(
     return TokenPairOut(**tokens)
 
 
-@router.post("/refresh", response_model=RefreshTokenOut)
+@router.post(
+    "/refresh",
+    response_model=RefreshTokenOut,
+    dependencies=[
+        Depends(RateLimiter(times=10, seconds=60)),
+    ],
+)
 def refresh_token(
     request: RefreshRequestIn,
     auth_service: AuthService = Depends(get_auth_service),

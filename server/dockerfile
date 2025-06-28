@@ -1,30 +1,37 @@
-# Use official Python image
+# Use the official Python image (3.13-slim for minimal footprint)
 FROM python:3.13-slim
 
-# Install system dependencies and build tools
+# Install system dependencies and utilities
 RUN apt-get update && apt-get install -y \
     build-essential \
     netcat-traditional \
     postgresql-client \
     curl \
+    dos2unix \
     && rm -rf /var/lib/apt/lists/*
 
-# Install uv package manager
+# Install uv (Python package manager)
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
 ENV PATH="/root/.local/bin/:$PATH"
 
+# Set working directory
 WORKDIR /code
+
+# Copy the entire project
 COPY . ./
 
+# Fix potential CRLF line endings and ensure script is executable
+
+# Setup Python environment using uv
 ENV PATH="/code/.venv/bin:$PATH"
 ENV UV_PROJECT_ENVIRONMENT="/.venv"
 ENV UV_LINK_MODE=copy
 
-RUN uv venv
-RUN uv sync
-RUN chmod +x /code/entrypoint.sh
+RUN uv venv && uv sync
 
-# Make entrypoint executable
-RUN chmod +x /code/entrypoint.sh
+# Expose any ports (optional, for debugging or running directly)
+EXPOSE 8000 8025
+
+# Run the startup script
 ENTRYPOINT ["/code/entrypoint.sh"]
