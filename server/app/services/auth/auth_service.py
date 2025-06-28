@@ -1,5 +1,14 @@
+import logging
 from datetime import timedelta
 
+import jwt
+from fastapi import HTTPException, status
+from mailers import Email, Mailer
+from passlib.context import CryptContext
+from pydantic import EmailStr, UUID4
+from sqlalchemy.exc import IntegrityError
+
+from app.core.config.config import SMTP_CONNECTION_STRING
 from app.core.security.jwt_handler import (
     SECRET_KEY,
     create_access_token,
@@ -8,18 +17,11 @@ from app.core.security.jwt_handler import (
 )
 from app.core.security.password import verify_password
 from app.models.database.user_model import User
-from app.repositories.interfaces.user_repository_interface import IUserRepository
-from app.repositories.implementations.user_repository import UserRepository
-from passlib.context import CryptContext
-from pydantic import EmailStr
-from fastapi import HTTPException
-from fastapi import status
-import jwt
-from sqlalchemy.exc import IntegrityError
+from app.repositories.implementations.user_repository import (
+    PasswordRepository,
+    UserRepository,
+)
 from app.schemas.request.auth_request import UserRegistrationIn
-
-import logging
-
 
 logger = logging.getLogger(__name__)
 
@@ -128,3 +130,46 @@ class AuthService:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Could not validate token",
             )
+
+
+class PasswordService:
+    def __init__(self, password_repository: PasswordRepository):
+        self.password_repository = password_repository
+
+    async def reset_token(self, email: EmailStr):
+        token = await self.password_repository.create_reset_token(email=email)
+
+        if token:
+            text = f"""
+            Reset Token 
+            https://localhost:3000/reset-password?token={token.token}
+            """
+
+            html = f"""
+            Reset Token 
+            https://localhost:3000/reset-password?token={token.token}
+            """
+
+            message = Email(
+                to=email, from_address="login@ath.com", text=text, html=html
+            )
+            mailer = Mailer(SMTP_CONNECTION_STRING)  # type:ignore
+            await mailer.send(message)
+
+            return {"message": "successfully sent"}
+
+        return None
+
+    async def change_password(self, token: UUID4, password: str):
+        validate_token = await self.password_repository.validate_token(token=token)
+        if validate_token:
+            password_changed = await self.password_repository.change_password(
+                password=password,
+                token=token,
+            )
+            if password_changed:
+                return True
+            else:
+                return False
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

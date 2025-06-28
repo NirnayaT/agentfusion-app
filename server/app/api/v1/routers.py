@@ -8,7 +8,7 @@ v1 = APIRouter(prefix="/api/v1", tags=["root"])
 
 @v1.get("/health", response_model=HealthCheckOut)
 def root():
-    return 200, {"hello": "world"}
+    return {"health": "world"}
 
 
 v1.include_router(router=auth_router)

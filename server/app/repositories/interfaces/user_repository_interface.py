@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from app.models.database.user_model import User as UserORM
-from pydantic import EmailStr
+from pydantic import EmailStr, UUID4
 
 
 class IUserRepository(ABC):
@@ -18,4 +18,8 @@ class IUserRepository(ABC):
 
     @abstractmethod
     async def delete(self, id: int) -> None:
+        raise NotImplementedError()
+
+    @abstractmethod
+    async def get_by_id(self, id: UUID4):
         raise NotImplementedError()

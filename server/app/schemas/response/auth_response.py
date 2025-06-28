@@ -16,3 +16,7 @@ class UserOut(BaseModel):
     email: str
     first_name: str
     last_name: str
+
+
+class MessageOut(BaseModel):
+    message: str

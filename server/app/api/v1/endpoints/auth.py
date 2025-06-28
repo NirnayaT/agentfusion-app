@@ -8,13 +8,19 @@ from app.dependencies.auth_dependencies import (
 )
 from app.models.database.user_model import User
 from app.schemas.request.auth_request import (
-    UserLoginIn,
+    PasswordResetConfirmIn,
+    PasswordResetRequestIn,
     RefreshRequestIn,
+    UserLoginIn,
     UserRegistrationIn,
 )
-from app.services.auth.auth_service import AuthService
-from app.models.database.user_model import User
-from fastapi import APIRouter, Depends, HTTPException, status
+from app.schemas.response.auth_response import (
+    MessageOut,
+    RefreshTokenOut,
+    TokenPairOut,
+    UserOut,
+)
+from app.services.auth.auth_service import AuthService, PasswordService
 
 router = APIRouter(tags=["Auth"])
 
@@ -90,3 +96,25 @@ async def get_current_user_endpoint(
         first_name=str(current_user.first_name),
         last_name=str(current_user.last_name),
     )
+
+
+@router.post("/password-reset/request", response_model=MessageOut)
+async def request_password_reset(
+    payload: PasswordResetRequestIn,
+    password_service: PasswordService = Depends(get_password_service),
+):
+    await password_service.reset_token(email=str(payload.email))
+    return MessageOut(message="successfully sent")
+
+
+@router.post("/password-reset/confim", response_model=MessageOut)
+async def confirm_password_reset(
+    payload: PasswordResetConfirmIn,
+    password_service: PasswordService = Depends(get_password_service),
+):
+    await password_service.change_password(
+        password=payload.password,
+        token=payload.token,
+    )
+
+    return MessageOut(message="password reset successfull")

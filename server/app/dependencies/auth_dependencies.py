@@ -2,8 +2,11 @@ import jwt
 from app.core.config.config import SECRET_KEY
 from app.core.security.jwt_handler import decode_token
 from app.dependencies.db import get_db
-from app.repositories.implementations.user_repository import UserRepository
-from app.services.auth.auth_service import AuthService
+from app.repositories.implementations.user_repository import (
+    UserRepository,
+    PasswordRepository,
+)
+from app.services.auth.auth_service import AuthService, PasswordService
 from fastapi import Depends, HTTPException, status
 from fastapi.security import (
     HTTPAuthorizationCredentials,
@@ -17,6 +20,10 @@ security = HTTPBearer()
 
 def get_auth_service(db: AsyncSession = Depends(get_db)):
     return AuthService(UserRepository(db))
+
+
+def get_password_service(db: AsyncSession = Depends(get_db)):
+    return PasswordService(PasswordRepository(db))
 
 
 async def get_current_user(
