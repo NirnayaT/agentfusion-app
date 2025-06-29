@@ -26,6 +26,20 @@ class UserRegistrationIn(BaseModel):
         return value
 
 
+class UserProfileUpdateIn(BaseModel):
+    email: str
+    first_name: str
+    last_name: str
+    # role: str
+
+    # @field_validator("role")
+    # @classmethod
+    # def validate_role(cls, value: str) -> str:
+    #     if value not in UserRolesEnum:
+    #         raise ValueError("invalid roles assigned")
+    #     return value
+
+
 class PasswordResetRequestIn(BaseModel):
     email: EmailStr
 
