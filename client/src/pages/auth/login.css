@@ -1,0 +1,39 @@
+/* Login css */
+
+.login-box {
+  min-height: 100vh;
+  background-image: url('../../assets/icons/login-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.login-submit-button {
+  margin-top: 18px !important;
+  background: var(--login-submit-color) !important;
+  color: var(--button-selected-text) !important;
+  text-transform: none !important;
+  font-size: var(--base-font-size);
+  font-family: var(--base-font);
+}
+
+/* login.css */
+
+.navbar-link {
+  font-weight: 500;
+  cursor: pointer;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.navbar-link:hover {
+  color: var(--button-active-color);
+}
+
+.navbar-link.active {
+  font-weight: 600;
+  color: var(--button-active-color);
+  border-bottom: 2px solid red;
+  padding-bottom: 2px;
+}

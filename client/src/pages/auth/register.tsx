@@ -22,6 +22,7 @@ import PhoneInputField from "../../components/auth/register/PhoneInputField";
 import AgentDetailsFields from "../../components/auth/register/AgentDetailsFields";
 import TermsCheckbox from "../../components/auth/register/TermsCheckbox";
 import ClientDetailsFields from "../../components/auth/register/ClientDetailsFields";
+import "./register.css";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const Register = () => {
   const password = useWatch({ control, name: "password" });
 
   return (
-    <Box>
+    <Box className="register-box">
       <Box
         sx={{
           display: "flex",
@@ -153,7 +154,7 @@ const Register = () => {
                   color: "var(--button-active-background)",
                   cursor: "pointer",
                   fontWeight: "600",
-                  textDecoration: "underline"
+                  textDecoration: "underline",
                 }}
                 onClick={() => navigate("/login")}
               >

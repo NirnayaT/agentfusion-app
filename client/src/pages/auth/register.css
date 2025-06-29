@@ -3,7 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 
 :root {
-  --body-color: #181818;             
   --register-paper-color: #D0CCCC45;     
   --title-color: #4A4E57;                
   --text-color: #4A4E57; 
@@ -15,16 +14,23 @@
   --text-field-background: #FFFFFFB2;
   --base-font: 'Inter', sans-serif;
   --base-font-size: 13px;
+  --login-submit-color: linear-gradient(90deg, #3B82F6 0%, #8B5CF6 100%);
+  --login-navbar-color: #fff;
+  --button-active-color: #black;
 }
 
 body {
+  font-family: var(--base-font);
+  font-size: var(--base-font-size);
+}
+
+.register-box {
+  min-height: 140vh;
   background-image: url('../../assets/icons/registration-bg.png');
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  font-family: var(--base-font);
-  font-size: var(--base-font-size);
 }
 
 .register-container {
@@ -45,12 +51,6 @@ body {
 .register-title {
   color: var(--title-color);
   margin: 0px 20px 10px 32% !important;
-}
-
-.login-title {
-  color: var(--title-color);
-  margin: 0px 50px 20px 50px !important;
-  font-size: 20px !important;
 }
 
 .register-textfield {
