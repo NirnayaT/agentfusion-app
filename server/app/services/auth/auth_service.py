@@ -20,7 +20,7 @@ from app.repositories.implementations.user_repository import (
     PasswordRepository,
     UserRepository,
 )
-from app.schemas.request.auth_request import UserRegistrationIn
+from app.schemas.request.auth_request import UserRegistrationIn, UserProfileUpdateIn
 
 logger = logging.getLogger(__name__)
 
