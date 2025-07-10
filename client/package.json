@@ -25,6 +25,7 @@
     "react-phone-input-2": "^2.15.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.6.2",
+    "recharts": "^3.0.2",
     "zod": "^3.25.64"
   },
   "devDependencies": {

@@ -1,0 +1,56 @@
+:root {
+  --sidebar-bg-color: #FFFFFF33;
+  --sidebar-text-color: #ffffff;
+  --sidebar-hover-bg: #2e2e3f;
+  --sidebar-selected-bg: #3a3a5a;
+  --sidebar-icon-color: #ffffff;
+  --sidebar-font-size: 14px;
+}
+
+.sidebar-root {
+  width: 215px;
+}
+
+.sidebar-root .MuiDrawer-paper {
+  width: 215px;
+  background-color: var(--sidebar-bg-color) !important;
+  color: var(--sidebar-text-color) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-top,
+.sidebar-bottom {
+  padding: 20px !important;
+}
+
+.sidebar-item {
+  margin: 4px 0;
+  border-radius: 8px;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-item:hover {
+  background-color: var(--sidebar-hover-bg);
+}
+
+.sidebar-item.selected {
+  background-color: var(--sidebar-selected-bg);
+  border-left: 3px solid #00bcd4;
+}
+
+.sidebar-icon {
+  color: var(--sidebar-icon-color);
+  min-width: 35px !important;
+}
+
+.sidebar-text .MuiTypography-root {
+  font-size: var(--sidebar-font-size);
+}
+
+.sidebar-divider {
+  background-color: #444 !important;
+}

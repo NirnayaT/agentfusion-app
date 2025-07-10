@@ -1,0 +1,92 @@
+
+:root {
+  --navbar-header-bg: #FFFFFF33;
+  --navbar-search-bg: #f1f1f1;
+  --navbar-border-color: #FFFFFF4D;
+}
+
+.navbar-root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 6px;
+  padding: 10px 15px;
+  max-width: 70%;
+  margin: 0 auto;
+  margin-bottom: 15px;
+  background-color: var(--navbar-header-bg) !important;
+  border: 1px solid var(--navbar-border-color) !important;
+}
+
+.navbar-title {
+  font-weight: 600 !important;
+}
+
+.navbar-search {
+  display: flex;
+  align-items: center;
+  width: 300px;
+  padding: 2px 12px;
+  border-radius: 16px !important;
+  box-shadow: none !important;
+  background-color: var(--navbar-search-bg) !important;
+}
+
+.navbar-search-icon {
+  font-size: 18px !important;
+  margin-right: 8px;
+}
+
+.navbar-search-input {
+  flex: 1;
+  font-size: 14px !important;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.navbar-sync {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navbar-dot {
+  font-size: 10px !important;
+}
+
+.dot-green {
+  color: green;
+}
+
+.dot-red {
+  color: red;
+}
+
+.navbar-sync-text {
+  font-weight: 500 !important;
+  font-size: 13px !important;
+}
+
+.navbar-sync-text.green {
+  color: green;
+}
+
+.navbar-sync-text.red {
+  color: red;
+}
+
+.navbar-button {
+  text-transform: none !important;
+  font-size: 13px !important;
+  padding: 4px 12px !important;
+  background: var(--button-active-background) !important;
+}
+
+.navbar-avatar {
+  width: 28px !important;
+  height: 28px !important;
+}
